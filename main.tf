@@ -6,7 +6,6 @@ terraform {
     }
   }
 }
-
 # Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
@@ -111,45 +110,8 @@ resource "aws_instance" "nginx_server" {
   key_name              = var.key_name
   vpc_security_group_ids = [aws_security_group.web_server.id]
   subnet_id              = data.aws_subnets.default.ids[0]
-  
-  user_data = <<-EOF
-    #!/bin/bash
-    sudo apt-get update -y
-    sudo apt-get install -y nginx
-    
-    # Start and enable nginx
-    sudo systemctl start nginx
-    sudo systemctl enable nginx
-    
-    # Create custom index.html
-    cat > /var/www/html/index.html << 'HTML'
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Terraform Nginx Server</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                margin-top: 50px;
-                background-color: #f4f4f4;
-            }
-            h1 {
-                color: #333;
-                font-size: 2.5em;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Welcome to the Terraform-managed Nginx Server on Ubuntu</h1>
-        <p>This server was automatically configured using Terraform!</p>
-    </body>
-    </html>
-HTML
-    
-    # Restart nginx to ensure everything is working
-    sudo systemctl restart nginx
-  EOF
+
+  user_data = "${file("install_nginx.sh")}"
 
   tags = {
     Name  = "rikhrv_nginx_server"
