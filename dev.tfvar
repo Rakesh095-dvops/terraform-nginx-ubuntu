@@ -1,0 +1,4 @@
+aws_region   = "ap-south-1"
+instance_type = "t2.micro"
+ami_id        = "ami-02f607855bfce66b6" # Ubuntu Server 24.04 LTS (HVM)
+key_name      = "rikhrv-ec2-2"
